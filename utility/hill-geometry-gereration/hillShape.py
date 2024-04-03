@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def profile(yy):
     'Calculate the shape of the periodic hill'
@@ -38,7 +39,7 @@ def profile(yy):
     return hout
 
 
-def para_profile(yy, a):
+def para_profile(yy, a, L):
     'Calculate the shape of the parameterized periodic hill'
 
     import numpy as np
@@ -60,7 +61,7 @@ def para_profile(yy, a):
         elif (x[i]>198) and (x[i]<=252) :
             ya[i] -= (54/28.0*(1-a))
             ya[i] -= (x[i]-198)*(1-a)/28.0
-    
+
     for i in range(len(x)):
         if x[i] > 126.0 :
             x[i] = 252.0 - x[i]
@@ -88,27 +89,19 @@ def para_profile(yy, a):
 
 
     hout = h/28.0
+    ya = ya/np.max(ya)*L
     return ya, hout
 
-
-
 if __name__ == "__main__":
-        
-    import matplotlib.pyplot as plt
-    yy=np.arange(0, 9, 0.01)
-    
-    h = profile(yy)
-    ya1, h0p5 = para_profile(yy, 0.5)
-    ya2, h1p5 = para_profile(yy, 1.5)
 
-    a=0.5
 
     symbols=['k-', 'g-', 'b-', 'm-', 'r-']
     alphas = np.array([0.5, 0.8, 1, 1.2, 1.5])
-    
+    yy=np.arange(0, 9, 0.01)
+
     for i, a in enumerate(alphas):
-    
-        ya, ha = para_profile(yy, a)
+        Lx = 6
+        ya, ha = para_profile(yy, a, Lx)
         plt.plot(ya, ha, symbols[i])
         xend = ya[-1]
         outline = np.array([[0, 0, xend, xend], [1, 3.06, 3.06, 1]])
@@ -116,5 +109,5 @@ if __name__ == "__main__":
 
     plt.axis([0, 5, 0, 5])
     plt.axis('equal')
-    plt.savefig('para-shapes.pdf')
+    plt.savefig('img/para-shapes.pdf')
     plt.show()
