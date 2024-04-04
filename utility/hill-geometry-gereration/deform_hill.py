@@ -25,16 +25,17 @@ def get_parameters(alphas, Lx_func, Ly):
                 params.append([alpha, elx, ely])
     return np.array(params) #(N, 3)
 
-def plot_hills(arr, figsize=(15, 5), draw=True, ax=None, labels=None, name=None):
+def plot_hills(arr, figsize=(15, 5), draw=True, ax=None, labels=None, name=None,
+        linestyles=None):
     if ax is None:
         fig = plt.figure(figsize=figsize)
         ax = fig.add_subplot()
 
     for idx,a in enumerate(arr):
         if labels is not None:
-            ax.plot(*a.T, label=labels[idx])
+            ax.plot(*a.T, label=labels[idx], linestyle=linestyles[idx])
         else:
-            ax.plot(*a.T)
+            ax.plot(*a.T, linestyles=linestyle[ids])
     ax.axis("equal")
 
     if draw:
@@ -60,6 +61,7 @@ if __name__ == "__main__":
     ## At first build deformed hills for Lx=9 (only way to let their code work):
     coords_all = []
     labels = []
+    linestyles = []
     for i in range(params.shape[0]):
         xa, ya = para_profile(x_coords, params[i, 0], params[i, 1])
         xa = np.append(xa, np.array([0, 0, xa[-1], xa[-1]]))
@@ -67,8 +69,15 @@ if __name__ == "__main__":
         coords = np.vstack((xa, ya)).T
         coords_all.append(coords)
         labels.append(f"{params[i, :]}")
+        if params[i, 0]==0.5:
+            linestyles.append('-')
+        if params[i, 0]==1:
+            linestyles.append('--')
+        if params[i, 0]==1.5:
+            linestyles.append('-.')
 
-    plot_hills(coords_all, draw=True, labels=labels, name='img/all_shapes')
+    plot_hills(coords_all, draw=True, labels=labels, name='img/all_shapes',
+            linestyles=linestyles)
     np.save("data/params.npy", params)
     np.save("data/def_hills.npy", np.array(coords_all))
 
